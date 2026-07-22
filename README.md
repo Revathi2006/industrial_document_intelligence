@@ -257,12 +257,15 @@ python run.py
 <img width="1897" height="944" alt="Screenshot 2026-07-22 232817" src="https://github.com/user-attachments/assets/156bce43-1482-4f13-8745-b14ce4f782fb" />
 <img width="1894" height="958" alt="Screenshot 2026-07-22 232940" src="https://github.com/user-attachments/assets/ba102a66-85e9-4451-9708-a0b40041327e" />
 <img width="1909" height="939" alt="Screenshot 2026-07-22 233043" src="https://github.com/user-attachments/assets/7922bfb7-ede2-497e-882b-487724d488bf" />
-<img width="1884" height="943" alt="Screenshot 2026-07-22 233535" src="https://github.com/user-attachments/assets/fb66207a-a07f-444c-9dec-ccbd13b82150" />
-<img width="1884" height="943" alt="Screenshot 2026-07-22 233535" src="https://github.com/user-attachments/assets/45d2b462-2063-42c0-8a08-98f3565f5e92" />
-<img width="1884" height="943" alt="Screenshot 2026-07-22 233535" src="https://github.com/user-attachments/assets/e76796dd-4e75-421f-9287-4888fa534eaf" />
-
-
-
+<img width="1903" height="946" alt="Screenshot 2026-07-22 233143" src="https://github.com/user-attachments/assets/5a7182f4-feb0-42b0-9bad-0403dbd3a24a" />
+<img width="1898" height="947" alt="Screenshot 2026-07-22 233233" src="https://github.com/user-attachments/assets/ac87d038-c7a6-45f0-b43a-cb7bb744b908" />
+<img width="1887" height="955" alt="Screenshot 2026-07-22 233253" src="https://github.com/user-attachments/assets/8f8d7562-4d32-4426-8d93-91c218a61b14" />
+<img width="1899" height="958" alt="Screenshot 2026-07-22 233353" src="https://github.com/user-attachments/assets/f69ae79a-1ec5-46f5-ba01-92e1f6273cb0" />
+<img width="1904" height="960" alt="Screenshot 2026-07-22 233412" src="https://github.com/user-attachments/assets/655790a9-54c6-4f0f-81b0-5ad78e735800" />
+<img width="1881" height="944" alt="Screenshot 2026-07-22 233446" src="https://github.com/user-attachments/assets/d4c2be4f-2ca0-4e27-86c1-c66f80296d2a" />
+<img width="1308" height="725" alt="Screenshot 2026-07-22 233457" src="https://github.com/user-attachments/assets/e034fbd3-3e1f-42b1-a708-9b7f15646827" />
+<img width="1873" height="942" alt="Screenshot 2026-07-22 233511" src="https://github.com/user-attachments/assets/69b2312b-68b0-4510-a35e-402e46846ab7" />
+<img width="1884" height="943" alt="Screenshot 2026-07-22 233535" src="https://github.com/user-attachments/assets/0efddd4b-6e2c-4b9c-91ef-2e0423bb28ad" />
 
 
 ## Features
