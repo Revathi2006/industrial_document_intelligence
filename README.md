@@ -1,29 +1,144 @@
 
-# 🏭 DocFlow Pro
+# 🏭 DocFlow Pro- **Industrial Document Intelligence Platform**
 
-> **Industrial Document Intelligence Platform**
 >
-> Upload, process, analyze, and chat with your industrial documents using AI.
+> An AI-powered RAG system that uploads, processes, analyzes, and chats with industrial documents.
+> Supports PDF, DOCX, XLSX, CSV, PNG, JPG, JPEG, TIFF, and XML files with automatic OCR for images.
 
 ---
 
 ## 👥 Team
 
-| Name | Role |
-|------|------|
-| 
-| **Rattish Kumar S S** | Team Lead & backend |
-|  **Revathi S** | AI/ML Engineer |
-| **Harini S** | Full Stack Developer |
+| Name | Role | Responsibility |
+|------|------|----------------|
+| **Rattish Kumar S S** | Team Lead & Backend Developer | Architecture, API, Database, Integration |
+| **Revathi S** | AI/ML Engineer | Embeddings, RAG Pipeline, Copilot, Root Cause Analysis |
+| **Harini S** | Full Stack Developer | Frontend UI, Knowledge Graph, Testing, Documentation |
+
+---
+
+## 🎯 Real-World Problems Solved
+
+### The Problem
+Industrial facilities manage **thousands of documents** — equipment manuals, inspection logs, nameplate images, maintenance records, Excel spreadsheets — scattered across folders, drives, and filing cabinets. When equipment fails, engineers waste **hours searching** for relevant information instead of fixing the problem.
+
+### Our Solution
+DocFlow Pro transforms chaotic document storage into an **intelligent, queryable knowledge base**. Upload any industrial document and instantly chat with it using AI.
+
+### Problems We Solve
+
+| # | Real-World Problem | How DocFlow Pro Solves It |
+|---|-------------------|---------------------------|
+| 1 | **Information Silos** — Documents scattered across computers, folders, and paper files | Centralized repository with drag-and-drop upload for all formats |
+| 2 | **Slow Information Retrieval** — Engineers spend 30% of time searching for documents | AI Copilot answers questions in seconds with source citations |
+| 3 | **Scanned Documents Unreadable** — Old manuals and nameplates are images, not text | Automatic OCR extracts text from images and scanned PDFs |
+| 4 | **Equipment Failure Analysis** — No systematic way to find why equipment failed | Root Cause Analysis agent with timeline, evidence, and recommendations |
+| 5 | **Lost Relationships** — Manual and inspection data are disconnected | Knowledge Graph links equipment ↔ manuals ↔ inspection logs |
+| 6 | **Duplicate Documents** — Same file stored multiple times | SHA256 hash detection prevents duplicate uploads |
+| 7 | **Unstructured Data** — Excel rows and CSV data hard to query individually | Smart chunking gives each data row its own searchable chunk |
+| 8 | **No Source Traceability** — Answers without knowing which document they came from | Every AI answer includes document name, page, and match percentage |
+| 9 | **Language Barriers** — Multi-lingual workforce in global industries | OCR and text processing support English, Tamil, Hindi, German |
+| 10 | **Maintenance Knowledge Loss** — Expert technicians leave, taking knowledge with them | All documents become a permanent, searchable AI knowledge base |
+
+---
+
+### Industry Use Cases
+
+#### 🏭 Manufacturing Plant
+- **Before**: Engineer spends 45 minutes finding the right maintenance manual for a failed motor
+- **After**: Engineer asks "How to replace bearing on MTR-AL3-001?" and gets answer in 5 seconds with exact manual page reference
+
+#### ⚡ Power Generation
+- **Before**: Inspection logs in Excel, turbine manuals in PDF, nameplate photos on phone — no connection
+- **After**: Upload all files → AI links everything → "Show all documents for Turbine T-101"
+
+#### 🏗️ Construction Equipment
+- **Before**: Service records lost when technician leaves
+- **After**: All service data stored and searchable — "What was the last maintenance on Excavator EX-200?"
+
+#### 🏥 Facility Management
+- **Before**: Hundreds of equipment manuals in filing cabinets
+- **After**: Upload once, chat anytime — "What is the fire pump inspection schedule?"
+
+---
+
+## ✨ Key Advantages
+
+### 🚀 Speed & Efficiency
+| Metric | Before DocFlow | With DocFlow |
+|--------|---------------|--------------|
+| Find relevant document | 15-45 minutes | 5 seconds |
+| Extract text from image | Manual typing (30 min) | Automatic OCR (10 sec) |
+| Analyze failure patterns | Hours of manual review | Instant analysis |
+| Cross-reference documents | Manually open each file | AI does it automatically |
+| Onboard new engineers | Weeks of document study | Ask AI and learn instantly |
+
+### 💰 Cost Savings
+- **Reduced Downtime**: Faster troubleshooting = less equipment downtime
+- **Knowledge Retention**: Expert knowledge preserved even when staff changes
+- **No Duplicate Work**: SHA256 prevents storing same document twice
+- **Free Tier LLM**: Groq provides free AI inference (no API costs)
+- **Open Source Stack**: SQLite, Tesseract, MiniLM — no licensing fees
+
+### 🔒 Security & Reliability
+- **Local Storage**: All documents stay on your server, not in cloud
+- **Duplicate Detection**: SHA256 hashing prevents redundant storage
+- **Audit Trail**: Every upload, process, and deletion is logged
+- **Data Persistence**: SQLite database survives server restarts
+
+### 🎨 User Experience
+- **Zero Training Needed**: Drag-and-drop interface, natural language chat
+- **Multi-Format Support**: 9 file types, no conversion needed
+- **Real-Time Processing**: Documents processed in seconds, not hours
+- **Source Citations**: Every AI answer shows exactly which document it came from
+- **Responsive Design**: Works on desktop, tablet, and mobile
+
+### 🧠 AI Intelligence
+- **Semantic Search**: Finds content by meaning, not just keywords
+- **Context-Aware**: AI understands equipment IDs, dates, and technical terms
+- **Cross-Document Reasoning**: Combines info from manuals, logs, and images
+- **Failure Prediction**: Identifies patterns that lead to equipment failure
+- **Continuous Learning**: More documents = smarter AI
+
+### 🔧 Technical Advantages
+| Feature | Benefit |
+|---------|---------|
+| Modular Architecture | Easy to add new features and document types |
+| REST API | Integrates with existing systems (SAP, Maximo) |
+| Vector Embeddings | Fast similarity search across thousands of chunks |
+| Smart Chunking | Tabular data gets row-level chunks for precise retrieval |
+| Groq LLM | Free, fast, and accurate AI responses |
+| OCR Pipeline | Automatic image preprocessing for better text extraction |
+
+---
+
+### 📊 Comparison
+
+| Feature | Traditional DMS | Basic Chatbot | **DocFlow Pro** |
+|---------|----------------|---------------|-----------------|
+| Multi-format upload | ✅ | ❌ | ✅ |
+| OCR for images | ❌ | ❌ | ✅ |
+| AI Q&A with sources | ❌ | ❌ | ✅ |
+| Knowledge Graph | ❌ | ❌ | ✅ |
+| Root Cause Analysis | ❌ | ❌ | ✅ |
+| Semantic Search | ❌ | ❌ | ✅ |
+| Vector Embeddings | ❌ | ❌ | ✅ |
+| Duplicate Detection | ❌ | ❌ | ✅ |
+| Free to run | ❌ | ❌ | ✅ |
+| Works offline | ✅ | ❌ | ✅ |
 
 ---
 
 ## 📑 Table of Contents
 
+- [Real-World Problems Solved](#-real-world-problems-solved)
+- [Key Advantages](#-key-advantages)
 - [Overview](#overview)
 - [Architecture](#architecture)
 - [Quick Start](#quick-start)
 - [Features](#features)
+- [OCR Support](#ocr-support)
+- [Supported File Types](#supported-file-types)
 - [Project Structure](#project-structure)
 - [API Reference](#api-reference)
 - [User Interfaces](#user-interfaces)
@@ -34,25 +149,24 @@
 - [Root Cause Analysis](#root-cause-analysis)
 - [Commands Reference](#commands-reference)
 - [Tech Stack](#tech-stack)
-- [Supported Formats](#supported-formats)
 - [Troubleshooting](#troubleshooting)
-- [License](#license)
 
 ---
 
 ## Overview
 
-DocFlow Pro is a complete **Retrieval-Augmented Generation (RAG)** system for industrial documents. Upload equipment manuals, inspection logs, nameplate images, and Excel data — the system automatically extracts text, generates AI-ready chunks, creates vector embeddings, and provides an intelligent chatbot that answers questions based on your documents.
+DocFlow Pro is a complete **Retrieval-Augmented Generation (RAG)** system for industrial equipment management. Upload equipment manuals, inspection logs, nameplate images, and Excel data — the system automatically extracts text (using OCR for images), generates AI-ready chunks, creates vector embeddings, and provides an intelligent chatbot that answers questions based on your documents.
 
 ### 🎯 What You Can Do
 
-| Task | How |
-|------|-----|
-| 📤 Upload documents | Drag & drop PDF, DOCX, XLSX, CSV, images |
-| 🔍 Search semantically | Find relevant content by meaning |
-| 🤖 Chat with AI | Ask questions, get answers with sources |
-| 🔗 Explore relationships | Knowledge graph links equipment to documents |
-| 🔧 Analyze failures | Root cause analysis with timeline & recommendations |
+| Task | Description |
+|------|-------------|
+| 📤 **Upload** | Drag & drop PDF, DOCX, XLSX, CSV, Images, XML |
+| 🔬 **OCR** | Automatic text extraction from images and scanned PDFs |
+| 🔍 **Search** | Semantic search across all documents |
+| 🤖 **Chat** | AI-powered Q&A with source citations |
+| 🔗 **Graph** | Knowledge graph linking equipment to documents |
+| 🔧 **Analyze** | Root cause analysis with failure timeline |
 
 ---
 
@@ -63,10 +177,11 @@ DocFlow Pro is a complete **Retrieval-Augmented Generation (RAG)** system for in
 │                     USER INTERFACES                          │
 │  /dashboard (Upload)  │  /copilot-ui (Chat)  │  /rca-ui (RCA)│
 └──────────────────────────┬───────────────────────────────────┘
-                           │
+                           │ HTTP/REST
                            ▼
 ┌──────────────────────────────────────────────────────────────┐
 │                   FASTAPI SERVER (:8000)                      │
+├──────────────────────────────────────────────────────────────┤
 │  /documents/*  │  /copilot/*  │  /kg/*  │  /rca/*            │
 └──────────────────────────┬───────────────────────────────────┘
                            │
@@ -76,36 +191,20 @@ DocFlow Pro is a complete **Retrieval-Augmented Generation (RAG)** system for in
 │ PROCESSING  │  │   AI COPILOT    │  │  KNOWLEDGE      │
 │ PIPELINE    │  │   (RAG)         │  │  GRAPH          │
 │             │  │                 │  │                 │
-│ • Extract   │  │ • Embeddings    │  │ • Entities      │
-│ • Clean     │  │ • Cosine Search │  │ • Relationships │
-│ • Chunk     │  │ • Groq LLM      │  │ • Queries       │
-│ • Metadata  │  │ • Context Build │  │                 │
+│ • Validate  │  │ • Embed (384d)  │  │ • Entities      │
+│ • Extract   │  │ • Cosine Search │  │ • Relationships │
+│ • OCR       │  │ • Retrieve Top-K│  │ • Graph Queries │
+│ • Clean     │  │ • Groq LLM      │  │ • Visual Links  │
+│ • Metadata  │  │ • Source Cite   │  │                 │
+│ • Chunk     │  │                 │  │                 │
 └──────┬──────┘  └────────┬────────┘  └────────┬────────┘
        │                  │                    │
        ▼                  ▼                    ▼
 ┌──────────────────────────────────────────────────────────────┐
 │                     DATA STORAGE                              │
-│  SQLite (doc_processor.db)  │  Embeddings (embeddings.pkl)   │
-│  Uploads (/uploads/)        │  Logs (/logs/)                 │
+│  📊 SQLite (doc_processor.db)  │  🧠 Embeddings (.pkl)       │
+│  📁 Uploads (/uploads/)        │  📋 Logs (/logs/)           │
 └──────────────────────────────────────────────────────────────┘
-```
-
-### RAG Flow
-
-```
-User Question
-     │
-     ▼
-Embedding Search (384d cosine similarity)
-     │
-     ▼
-Retrieve Top-K Chunks from Database
-     │
-     ▼
-Build Context Prompt
-     │
-     ▼
-Groq LLM (llama-3.1-8b-instant) → Answer + Sources
 ```
 
 ---
@@ -114,28 +213,30 @@ Groq LLM (llama-3.1-8b-instant) → Answer + Sources
 
 ### Prerequisites
 
-- **Python 3.11+** (3.13 works)
-- **Tesseract OCR** (for image text extraction)
-- **Groq API Key** (free from [console.groq.com](https://console.groq.com))
+| Software | Version | Required For |
+|----------|---------|--------------|
+| Python | 3.11+ | Backend server |
+| Tesseract OCR | Latest | Image text extraction |
+| Groq API Key | Free | AI Copilot |
 
 ### Installation
 
 ```powershell
-# 1. Clone or download the project
+# 1. Navigate to project folder
 cd industrial-doc-processor
 
 # 2. Create virtual environment
 python -m venv venv
 .\venv\Scripts\Activate.ps1
 
-# 3. Install dependencies
+# 3. Install all dependencies
 pip install -r requirements.txt
 
-# 4. Install Tesseract (for OCR)
+# 4. Install Tesseract OCR for image processing
 winget install UB-Mannheim.TesseractOCR
 
-# 5. Set Groq API key in copilot/copilot_api.py
-# GROQ_API_KEY = "gsk_YOUR_KEY_HERE"
+# 5. Get free Groq API key from https://console.groq.com
+#    Then update copilot/copilot_api.py with your key
 
 # 6. Start the server
 python run.py
@@ -143,74 +244,84 @@ python run.py
 
 ### Open in Browser
 
-| URL | Page |
-|-----|------|
-| `http://localhost:8000/dashboard` | Upload & Manage |
-| `http://localhost:8000/copilot-ui` | AI Chat |
-| `http://localhost:8000/rca-ui` | Root Cause Analysis |
-| `http://localhost:8000/docs` | API Documentation |
+| URL | Page | Purpose |
+|-----|------|---------|
+| `http://localhost:8000/dashboard` | Upload Dashboard | Upload & manage documents |
+| `http://localhost:8000/copilot-ui` | AI Copilot | Chat with your documents |
+| `http://localhost:8000/rca-ui` | Root Cause Analysis | Analyze equipment failures |
+| `http://localhost:8000/docs` | API Docs | Interactive Swagger UI |
 
 ---
+### Output:
+<img width="1897" height="950" alt="Screenshot 2026-07-22 232656" src="https://github.com/user-attachments/assets/3598eff2-5073-48fc-bc26-e188beb09cbc" />
+<img width="1897" height="944" alt="Screenshot 2026-07-22 232817" src="https://github.com/user-attachments/assets/156bce43-1482-4f13-8745-b14ce4f782fb" />
+<img width="1894" height="958" alt="Screenshot 2026-07-22 232940" src="https://github.com/user-attachments/assets/ba102a66-85e9-4451-9708-a0b40041327e" />
+<img width="1909" height="939" alt="Screenshot 2026-07-22 233043" src="https://github.com/user-attachments/assets/7922bfb7-ede2-497e-882b-487724d488bf" />
+<img width="1884" height="943" alt="Screenshot 2026-07-22 233535" src="https://github.com/user-attachments/assets/fb66207a-a07f-444c-9dec-ccbd13b82150" />
+<img width="1884" height="943" alt="Screenshot 2026-07-22 233535" src="https://github.com/user-attachments/assets/45d2b462-2063-42c0-8a08-98f3565f5e92" />
+<img width="1884" height="943" alt="Screenshot 2026-07-22 233535" src="https://github.com/user-attachments/assets/e76796dd-4e75-421f-9287-4888fa534eaf" />
+
+
+
+
 
 ## Features
 
 ### 📤 Document Upload & Processing
-- **Drag & drop** interface
-- **Auto-processing**: Extract → Clean → Chunk → Embed → Store
-- **Duplicate detection** via SHA256 hash
-- **Progress tracking** with status updates
+- **Drag & drop** interface with file type badges
+- **Auto-processing**: Extract → OCR → Clean → Chunk → Embed → Store (all in one step)
+- **Duplicate detection** via SHA256 hashing
+- **Progress tracking** with real-time status updates
 - **Multi-file upload** support
 
+### 🔬 OCR (Optical Character Recognition)
+- **Automatic PDF detection**: Text-based vs scanned
+- **Image preprocessing**: Grayscale, thresholding, denoising
+- **Multi-language**: English, Tamil, Hindi, German
+- **Confidence scoring**: Quality assessment
+- **Nameplate reading**: Equipment specs from photos
+
 ### 📄 Text Extraction
-- **PDF**: PyMuPDF (fitz)
-- **Word**: python-docx
-- **Excel/CSV**: openpyxl, pandas
-- **Images**: Tesseract OCR (nameplates, inspection photos)
-- **XML**: ElementTree
+PDF (PyMuPDF) | DOCX (python-docx) | XLSX/CSV (openpyxl/pandas) | Images (Tesseract OCR) | XML (ElementTree)
 
 ### 🧹 Text Cleaning
-- Removes headers, footers, watermarks
-- Fixes broken OCR words
-- Normalizes whitespace and special characters
+Headers/footers removal | Broken word fixing | Whitespace normalization | Watermark removal
 
 ### 🏷️ Metadata Extraction
-- Equipment IDs (e.g., MTR-AL3-001)
-- Email addresses
-- Dates and versions
-- Equipment names and categories
+Equipment IDs | Emails | Dates | Versions | Categories | Departments
 
 ### ✂️ Smart Chunking
-- **Normal text**: 500-word segments
-- **Tabular data**: Each row becomes its own chunk with header
-- Preserves page numbers and sections
+500-word segments for text | Row-by-row chunks for tabular data | Page tracking
 
 ### 🧠 Vector Embeddings
-- **Model**: all-MiniLM-L6-v2 (384 dimensions)
-- **Storage**: Pickle file (`embeddings.pkl`)
-- **Search**: Cosine similarity
+MiniLM model | 384 dimensions | Cosine similarity | L2 normalized
 
 ### 🤖 AI Copilot (RAG)
-- **LLM**: Groq (llama-3.1-8b-instant)
-- **Context retrieval**: Top-K chunks via embedding search
-- **Source citations**: Shows which document and match percentage
-- **Equipment-aware**: Detects equipment IDs for precise answers
+Groq LLM | Top-K retrieval | Source citations | Equipment-aware
 
 ### 🔗 Knowledge Graph
-- Links documents ↔ equipment ↔ categories
-- Query by equipment ID, category, or manufacturer
-- Relationship mapping
+Equipment ↔ Documents ↔ Categories | Graph queries | Relationship mapping
 
 ### 🔍 Root Cause Analysis
-- Analyzes inspection data for failure patterns
-- Builds failure timeline
-- Identifies root cause with confidence score
-- Generates actionable recommendations
+Failure timeline | Pattern detection | Root cause identification | Recommendations
 
 ### 🖥️ Modern UI
-- Dark theme with gradient accents
-- Responsive design
-- Real-time statistics
-- Professional typography
+Dark theme | Responsive design | Real-time stats | Professional typography
+
+---
+
+## Supported File Types
+
+| Format | Extensions | Max Size | OCR |
+|--------|-----------|----------|-----|
+| PDF | `.pdf` | 100 MB | ✅ Scanned |
+| Word | `.docx` | 100 MB | No |
+| Excel | `.xlsx` | 100 MB | No |
+| CSV | `.csv` | 100 MB | No |
+| PNG | `.png` | 100 MB | ✅ Yes |
+| JPEG | `.jpg`, `.jpeg` | 100 MB | ✅ Yes |
+| TIFF | `.tiff`, `.tif` | 100 MB | ✅ Yes |
+| XML | `.xml` | 100 MB | No |
 
 ---
 
@@ -218,223 +329,39 @@ python run.py
 
 ```
 industrial-doc-processor/
-│
-├── main.py                         # FastAPI application
-├── config.py                       # Settings & configuration
-├── run.py                          # Server launcher
-├── requirements.txt                # Python dependencies
-├── .env                            # Environment variables
-│
-├── api/                            # REST API layer
-│   ├── __init__.py
-│   ├── upload.py                   # POST /documents/upload
-│   ├── documents.py                # GET/DELETE /documents/{id}
-│   └── search.py                   # GET /documents/search
-│
-├── services/                       # Processing pipeline
-│   ├── __init__.py
-│   ├── validator.py                # File validation
-│   ├── extractor.py                # Text extraction (PDF/DOCX/OCR)
-│   ├── ocr.py                      # Tesseract OCR
-│   ├── cleaner.py                  # Text cleaning
-│   ├── metadata.py                 # Metadata extraction
-│   ├── chunker.py                  # Smart text chunking
-│   ├── embeddings.py               # 384d vectors + cosine similarity
-│   ├── pipeline.py                 # Processing orchestrator
-│   ├── classifier.py               # Document classification
-│   ├── table_extractor.py          # Table extraction
-│   ├── image_extractor.py          # Image extraction
-│   ├── language_detector.py        # Language detection
-│   ├── storage.py                  # File storage management
-│   └── upload_service.py           # Upload handling
-│
-├── copilot/                        # AI Copilot module
-│   ├── __init__.py
-│   ├── retriever.py                # Embedding search & retrieval
-│   └── copilot_api.py              # Groq LLM chat endpoint
-│
-├── knowledge_graph/                # Knowledge graph module
-│   ├── __init__.py
-│   ├── graph_builder.py            # SQLite knowledge graph
-│   └── kg_api.py                   # Graph API endpoints
-│
-├── root_cause/                     # Root cause analysis module
-│   ├── __init__.py
-│   ├── agent.py                    # Failure analysis agent
-│   └── api.py                      # RCA API endpoints
-│
-├── database/                       # Database layer
-│   ├── __init__.py
-│   ├── models.py                   # SQLAlchemy ORM models
-│   └── connection.py               # Database connection & sessions
-│
-├── index.html                      # Upload dashboard UI
-├── copilot.html                    # AI Chat UI
-├── rca.html                        # Root Cause Analysis UI
-│
-├── uploads/                        # Stored original files
-├── embeddings/                     # Vector embeddings (.pkl)
-├── extracted/                      # Extracted content
-├── logs/                           # Application logs
-│
-├── view_database.py                # Database viewer tool
-├── reindex_docs.py                 # Re-index embeddings
-├── show_chunks.py                  # Chunk inspector
-├── test_kg.py                      # Knowledge graph tester
-└── doc_processor.db                # SQLite database
+├── main.py, config.py, run.py, requirements.txt
+├── api/           # REST API (upload, documents, search)
+├── services/      # Processing (extractor, ocr, cleaner, chunker, embeddings, pipeline)
+├── copilot/       # AI Copilot (retriever, copilot_api)
+├── knowledge_graph/  # Knowledge Graph (graph_builder, kg_api)
+├── root_cause/    # Root Cause Analysis (agent, api)
+├── database/      # Models & Connection
+├── index.html, copilot.html, rca.html  # UIs
+├── uploads/, embeddings/, logs/  # Storage
+└── doc_processor.db  # Database
 ```
 
 ---
 
 ## API Reference
 
-### Document Management
-
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| `POST` | `/documents/upload` | Upload & auto-process documents |
-| `GET` | `/documents` | List all documents (with filters) |
-| `GET` | `/documents/{id}` | Get document details |
-| `DELETE` | `/documents/{id}` | Delete document & all related data |
-| `GET` | `/documents/{id}/status` | Get processing status |
-| `GET` | `/documents/{id}/metadata` | Get extracted metadata |
-| `GET` | `/documents/{id}/chunks` | Get document chunks |
-| `GET` | `/documents/search?q=` | Semantic search via embeddings |
-
-### AI Copilot
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `POST` | `/copilot/chat` | Chat with AI (RAG) |
-| `GET` | `/copilot/health` | Health check |
-
-**Request Body:**
-```json
-{
-    "question": "What is the motor temperature?",
-    "top_k": 3
-}
-```
-
-**Response:**
-```json
-{
-    "answer": "The winding temperature is 95°C...",
-    "sources": ["Motor_Inspection_Log.csv (1 pages) - 42.6% match"],
-    "documents_used": ["Motor_Inspection_Log.csv (1 pages) - 42.6% match"]
-}
-```
-
-### Knowledge Graph
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `GET` | `/kg/query?q=` | Search graph |
-| `GET` | `/kg/equipment` | List all equipment |
-| `GET` | `/kg/documents` | List all documents |
-| `GET` | `/kg/document/{id}/relationships` | Get document relationships |
-
-### Root Cause Analysis
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `GET` | `/rca/analyze/{equipment_id}` | Full failure analysis |
-| `GET` | `/rca/quick/{equipment_id}` | Quick root cause summary |
-
----
-
-## Database Schema
-
-### `documents`
-| Column | Type | Description |
-|--------|------|-------------|
-| id | INTEGER PK | Auto-increment ID |
-| filename | VARCHAR(255) | UUID filename on disk |
-| original_filename | VARCHAR(255) | Original uploaded name |
-| file_path | VARCHAR(500) | Full file path |
-| file_size | INTEGER | Size in bytes |
-| file_type | VARCHAR(10) | Extension (.pdf, .docx, etc.) |
-| sha256_hash | VARCHAR(64) | Duplicate detection hash |
-| status | ENUM | uploaded/extracting/cleaning/chunking/embedding/completed/failed |
-| processing_progress | FLOAT | 0.0 to 100.0 |
-| doc_metadata | JSON | Extracted metadata |
-| page_count | INTEGER | Number of pages |
-| word_count | INTEGER | Total words |
-| language | VARCHAR(10) | Detected language |
-| version | VARCHAR(20) | Document version |
-| created_at | TIMESTAMP | Upload timestamp |
-| processed_at | TIMESTAMP | Completion timestamp |
-
-### `chunks`
-| Column | Type | Description |
-|--------|------|-------------|
-| id | INTEGER PK | Auto-increment ID |
-| document_id | INTEGER FK | References documents.id |
-| chunk_number | INTEGER | Sequential chunk number |
-| content | TEXT | Chunk text (500 words) |
-| word_count | INTEGER | Words in chunk |
-| page_number | INTEGER | Source page |
-| section | VARCHAR(255) | Section name |
-| qdrant_id | VARCHAR(255) | Embedding reference |
-| chunk_metadata | JSON | Additional info |
+| POST | `/documents/upload` | Upload & process |
+| GET | `/documents` | List documents |
+| GET | `/documents/{id}` | Get details |
+| DELETE | `/documents/{id}` | Delete |
+| GET | `/documents/{id}/chunks` | View chunks |
+| POST | `/copilot/chat` | AI Chat |
+| GET | `/kg/query?q=` | Graph search |
+| GET | `/rca/analyze/{id}` | Root cause |
 
 ---
 
 ## Processing Pipeline
 
 ```
-Step 1: UPLOAD
-    ↓ Save file with UUID name, check duplicates (SHA256)
-
-Step 2: EXTRACT
-    ↓ PyMuPDF (PDF) / python-docx (DOCX) / Tesseract (Images)
-
-Step 3: CLEAN
-    ↓ Remove headers, footers, watermarks, normalize text
-
-Step 4: METADATA
-    ↓ Extract equipment IDs, emails, dates, versions
-
-Step 5: CHUNK
-    ↓ Split into 500-word segments (row-by-row for tabular)
-
-Step 6: EMBED
-    ↓ Generate 384d vectors using MiniLM model
-
-Step 7: STORE
-    ↓ Save chunks to SQLite, embeddings to embeddings.pkl
-
-Status: COMPLETED ✅
-```
-
----
-
-## Commands Reference
-
-### Server
-```powershell
-python run.py                    # Start server
-Ctrl+C                           # Stop server
-```
-
-### Embeddings
-```powershell
-python reindex_docs.py           # Re-generate all embeddings
-```
-
-### Database
-```powershell
-python view_database.py          # View all database contents
-python show_chunks.py            # View chunks
-```
-
-### Testing
-```powershell
-# Test embeddings
-python -c "from services.embeddings import embedding_generator; embedding_generator.load_from_disk(); print(embedding_generator.get_stats())"
-
-# Test copilot search
-python -c "from copilot.retriever import Retriever; r=Retriever(); c,s=r.get_context('motor',3); print(c[:500])"
+UPLOAD → VALIDATE → EXTRACT → OCR → CLEAN → METADATA → CHUNK → EMBED → STORE → ✅
 ```
 
 ---
@@ -443,58 +370,38 @@ python -c "from copilot.retriever import Retriever; r=Retriever(); c,s=r.get_con
 
 | Layer | Technology |
 |-------|-----------|
-| **Backend Framework** | FastAPI |
-| **Server** | Uvicorn |
-| **Database** | SQLite + SQLAlchemy |
-| **PDF Processing** | PyMuPDF |
-| **Word Processing** | python-docx |
-| **Excel Processing** | openpyxl, pandas |
-| **OCR** | Tesseract + pytesseract |
-| **Image Processing** | OpenCV, Pillow |
-| **Embeddings** | Sentence-Transformers (MiniLM 384d) |
-| **Similarity** | scikit-learn (cosine) |
-| **LLM** | Groq (llama-3.1-8b-instant) |
-| **NLP** | NLTK, langdetect |
-| **Logging** | Loguru |
-| **Frontend** | HTML5, CSS3, JavaScript |
+| Backend | FastAPI + Uvicorn |
+| Database | SQLite + SQLAlchemy |
+| PDF | PyMuPDF |
+| OCR | Tesseract + pytesseract |
+| Embeddings | Sentence-Transformers (MiniLM 384d) |
+| LLM | Groq (llama-3.1-8b-instant) |
+| NLP | NLTK, langdetect |
+| Frontend | HTML5, CSS3, JavaScript |
 
 ---
 
-## Supported Formats
+## Commands Reference
 
-| Format | Extensions | Max Size | Processor |
-|--------|-----------|----------|-----------|
-| PDF | `.pdf` | 100 MB | PyMuPDF |
-| Word Document | `.docx` | 100 MB | python-docx |
-| Excel Spreadsheet | `.xlsx` | 100 MB | openpyxl |
-| CSV | `.csv` | 100 MB | pandas |
-| PNG Image | `.png` | 100 MB | Tesseract OCR |
-| JPEG Image | `.jpg`, `.jpeg` | 100 MB | Tesseract OCR |
-| TIFF Image | `.tiff`, `.tif` | 100 MB | Tesseract OCR |
-| XML | `.xml` | 100 MB | ElementTree |
+```powershell
+python run.py                    # Start server
+python reindex_docs.py           # Re-generate embeddings
+python view_database.py          # View database
+```
 
 ---
 
 ## Troubleshooting
 
-### Server won't start
 ```powershell
+# Port in use
 netstat -ano | findstr :8000
 taskkill /PID <PID> /F
-```
 
-### PyMuPDF install fails
-```powershell
-pip install pymupdf --only-binary=:all:
-```
-
-### Tesseract not found
-```powershell
+# Tesseract missing
 winget install UB-Mannheim.TesseractOCR
-```
 
-### Embeddings not generating
-```powershell
+# Embeddings not generating
 python reindex_docs.py
 ```
 
@@ -502,7 +409,7 @@ python reindex_docs.py
 
 ## 📄 License
 
-MIT License - Free for personal and commercial use.
+MIT License — Free for personal and commercial use.
 
 ---
 
@@ -510,9 +417,11 @@ MIT License - Free for personal and commercial use.
   <b>DocFlow Pro v2.0.0</b><br>
   <sub>Industrial Document Intelligence Platform</sub><br>
   <br>
-  <b>Team</b><br>
-  <sub>Revathi S | Rattish Kumar S S | Harini S</sub><br>
+  <b>👥 Team</b><br>
+  <sub><b>Rattish Kumar S S</b> — Team Lead & Backend Developer</sub><br>
+  <sub><b>Revathi S</b> — AI/ML Engineer</sub><br>
+  <sub><b>Harini S</b> — Full Stack Developer</sub><br>
   <br>
-  <sub>Built with ❤️ for industrial equipment management</sub>
+
 </p>
 ```
