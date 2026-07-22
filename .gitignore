@@ -1,0 +1,32 @@
+@"
+# Python
+__pycache__/
+*.py[cod]
+*.so
+venv/
+env/
+*.egg-info/
+
+# Database
+*.db
+
+# Embeddings
+embeddings/*.pkl
+
+# Uploaded files
+uploads/*
+
+# Logs
+logs/*.log
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+"@ | Out-File -FilePath ".gitignore" -Encoding ASCII

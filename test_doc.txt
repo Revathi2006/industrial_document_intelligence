@@ -1,0 +1,10 @@
+﻿INDUSTRIAL PUMP MAINTENANCE MANUAL
+Equipment: Centrifugal Pump XP-500
+Department: Mechanical Maintenance
+Version: 3.2
+Engineer: John Smith
+
+MAINTENANCE PROCEDURES:
+1. Daily check pressure gauge
+2. Weekly lubricate bearings
+3. Monthly full inspection

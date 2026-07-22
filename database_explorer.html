@@ -1,0 +1,419 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database Explorer</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', monospace;
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 20px;
+        }
+        .header {
+            background: #2d2d2d;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #404040;
+        }
+        .header h1 { color: #569cd6; }
+        .status { color: #4ec9b0; margin-top: 10px; }
+        .tabs {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .tab {
+            padding: 10px 20px;
+            background: #2d2d2d;
+            border: 1px solid #404040;
+            color: #d4d4d4;
+            cursor: pointer;
+            border-radius: 5px 5px 0 0;
+        }
+        .tab:hover { background: #3d3d3d; }
+        .tab.active {
+            background: #569cd6;
+            color: white;
+            border-color: #569cd6;
+        }
+        .panel {
+            background: #252526;
+            border: 1px solid #404040;
+            border-radius: 0 8px 8px 8px;
+            padding: 20px;
+            min-height: 400px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th {
+            background: #333;
+            padding: 10px;
+            text-align: left;
+            border-bottom: 2px solid #569cd6;
+            color: #569cd6;
+        }
+        td {
+            padding: 8px 10px;
+            border-bottom: 1px solid #404040;
+        }
+        tr:hover { background: #2a2a2a; }
+        .badge {
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 11px;
+        }
+        .bg-green { background: #1e3a1e; color: #4ec9b0; }
+        .bg-yellow { background: #3a3a1e; color: #dcdcaa; }
+        .bg-blue { background: #1e2a3a; color: #569cd6; }
+        .bg-red { background: #3a1e1e; color: #f48771; }
+        .json-viewer {
+            background: #1e1e1e;
+            padding: 15px;
+            border-radius: 5px;
+            border: 1px solid #404040;
+            font-family: 'Consolas', monospace;
+            font-size: 13px;
+            white-space: pre-wrap;
+            max-height: 500px;
+            overflow-y: auto;
+            color: #d4d4d4;
+        }
+        .key { color: #569cd6; }
+        .string { color: #ce9178; }
+        .number { color: #b5cea8; }
+        .boolean { color: #569cd6; }
+        button {
+            background: #0e639c;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+        button:hover { background: #1177bb; }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .stat-card {
+            background: #2d2d2d;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #404040;
+            text-align: center;
+        }
+        .stat-value { font-size: 2em; color: #569cd6; font-weight: bold; }
+        .stat-label { color: #888; margin-top: 5px; }
+        pre { margin: 0; }
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🗄️ Database Explorer</h1>
+        <div class="status" id="status">Connecting...</div>
+    </div>
+
+    <div class="tabs">
+        <div class="tab active" onclick="showTab('overview')">📊 Overview</div>
+        <div class="tab" onclick="showTab('documents')">📄 Documents</div>
+        <div class="tab" onclick="showTab('chunks')">✂️ Chunks</div>
+        <div class="tab" onclick="showTab('metadata')">🏷️ Metadata</div>
+        <div class="tab" onclick="showTab('tables')">📊 Tables</div>
+        <div class="tab" onclick="showTab('images')">🖼️ Images</div>
+        <div class="tab" onclick="showTab('logs')">📋 Audit Logs</div>
+    </div>
+
+    <div class="panel" id="panel">
+        <div class="loading">Loading...</div>
+    </div>
+
+    <script>
+        const API = 'http://localhost:8000';
+        let currentDoc = null;
+
+        // Check connection
+        async function init() {
+            try {
+                const res = await fetch(API + '/');
+                if (res.ok) {
+                    document.getElementById('status').textContent = '🟢 Connected to API';
+                    showTab('overview');
+                }
+            } catch(e) {
+                document.getElementById('status').textContent = '🔴 API Not Connected';
+            }
+        }
+
+        function showTab(tab) {
+            // Update active tab
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Load content
+            switch(tab) {
+                case 'overview': loadOverview(); break;
+                case 'documents': loadDocuments(); break;
+                case 'chunks': loadChunks(); break;
+                case 'metadata': loadMetadata(); break;
+                case 'tables': loadTables(); break;
+                case 'images': loadImages(); break;
+                case 'logs': loadLogs(); break;
+            }
+        }
+
+        async function loadOverview() {
+            const panel = document.getElementById('panel');
+            
+            try {
+                const res = await fetch(API + '/documents?limit=100');
+                const data = await res.json();
+                
+                let html = '<div class="stats-grid">';
+                html += '<div class="stat-card"><div class="stat-value">' + (data.total || 0) + '</div><div class="stat-label">Total Documents</div></div>';
+                
+                let completed = 0, processing = 0, failed = 0;
+                if (data.documents) {
+                    data.documents.forEach(d => {
+                        if (d.status === 'completed') completed++;
+                        else if (d.status === 'failed') failed++;
+                        else processing++;
+                    });
+                }
+                
+                html += '<div class="stat-card"><div class="stat-value">' + completed + '</div><div class="stat-label">Completed</div></div>';
+                html += '<div class="stat-card"><div class="stat-value">' + processing + '</div><div class="stat-label">Processing</div></div>';
+                html += '<div class="stat-card"><div class="stat-value">' + failed + '</div><div class="stat-label">Failed</div></div>';
+                html += '</div>';
+                
+                html += '<h3 style="margin-bottom:10px;">📁 Database File</h3>';
+                html += '<div class="json-viewer"><span class="key">SQLite Database:</span> <span class="string">doc_processor.db</span>\n';
+                html += '<span class="key">Location:</span> <span class="string">C:\\Users\\admin\\industrial-doc-processor\\doc_processor.db</span>\n\n';
+                html += '<span class="key">Tables:</span>\n';
+                html += '  • <span class="string">documents</span> - Main document records\n';
+                html += '  • <span class="string">chunks</span> - Text chunks for processing\n';
+                html += '  • <span class="string">extracted_images</span> - Images from documents\n';
+                html += '  • <span class="string">extracted_tables</span> - Tables from documents\n';
+                html += '  • <span class="string">audit_logs</span> - Operation logs\n';
+                html += '  • <span class="string">processing_queue</span> - Processing queue\n';
+                html += '</div>';
+                
+                html += '<h3 style="margin-top:20px;margin-bottom:10px;">🔧 API Endpoints</h3>';
+                html += '<div class="json-viewer">';
+                html += '<span class="key">Upload:</span> <span class="string">POST /documents/upload</span>\n';
+                html += '<span class="key">List:</span> <span class="string">GET /documents</span>\n';
+                html += '<span class="key">Get One:</span> <span class="string">GET /documents/{id}</span>\n';
+                html += '<span class="key">Delete:</span> <span class="string">DELETE /documents/{id}</span>\n';
+                html += '<span class="key">Status:</span> <span class="string">GET /documents/{id}/status</span>\n';
+                html += '<span class="key">Metadata:</span> <span class="string">GET /documents/{id}/metadata</span>\n';
+                html += '<span class="key">Chunks:</span> <span class="string">GET /documents/{id}/chunks</span>\n';
+                html += '<span class="key">Search:</span> <span class="string">GET /documents/search?q=</span>\n';
+                html += '</div>';
+                
+                panel.innerHTML = html;
+            } catch(e) {
+                panel.innerHTML = '<p style="color:red;">Error: ' + e.message + '</p>';
+            }
+        }
+
+        async function loadDocuments() {
+            const panel = document.getElementById('panel');
+            
+            try {
+                const res = await fetch(API + '/documents?limit=100');
+                const data = await res.json();
+                
+                if (!data.documents || data.documents.length === 0) {
+                    panel.innerHTML = '<p style="text-align:center;padding:40px;">📭 No documents in database</p>';
+                    return;
+                }
+
+                let html = '<table><thead><tr><th>ID</th><th>Filename</th><th>Type</th><th>Status</th><th>Pages</th><th>Words</th><th>Language</th><th>Size</th><th>Action</th></tr></thead><tbody>';
+                
+                data.documents.forEach(doc => {
+                    const statusBadge = 'badge ' + (doc.status === 'completed' ? 'bg-green' : doc.status === 'failed' ? 'bg-red' : 'bg-yellow');
+                    html += '<tr>';
+                    html += '<td><b>#' + doc.id + '</b></td>';
+                    html += '<td>' + (doc.filename || 'N/A') + '</td>';
+                    html += '<td>' + (doc.type || 'N/A') + '</td>';
+                    html += '<td><span class="' + statusBadge + '">' + (doc.status || 'unknown') + '</span></td>';
+                    html += '<td>' + (doc.page_count || '-') + '</td>';
+                    html += '<td>' + (doc.word_count || '-') + '</td>';
+                    html += '<td>' + (doc.language || '-') + '</td>';
+                    html += '<td>' + (doc.file_size ? (doc.file_size/1024).toFixed(1)+' KB' : '-') + '</td>';
+                    html += '<td><button onclick="viewDocument(' + doc.id + ')">👁 View Details</button></td>';
+                    html += '</tr>';
+                });
+                
+                html += '</tbody></table>';
+                panel.innerHTML = html;
+            } catch(e) {
+                panel.innerHTML = '<p style="color:red;">Error: ' + e.message + '</p>';
+            }
+        }
+
+        async function viewDocument(id) {
+            try {
+                const res = await fetch(API + '/documents/' + id);
+                const doc = await res.json();
+                
+                const panel = document.getElementById('panel');
+                panel.innerHTML = '<h3>📄 Document #' + id + ' Details</h3>' +
+                    '<button onclick="showTab(\'documents\')" style="margin:10px 0;">← Back to List</button>' +
+                    '<div class="json-viewer">' + syntaxHighlight(JSON.stringify(doc, null, 2)) + '</div>';
+            } catch(e) {
+                alert('Error: ' + e.message);
+            }
+        }
+
+        async function loadChunks() {
+            const panel = document.getElementById('panel');
+            panel.innerHTML = '<div class="loading">Loading chunks...</div>';
+            
+            try {
+                // First get all documents
+                const docsRes = await fetch(API + '/documents?limit=100');
+                const docsData = await docsRes.json();
+                
+                if (!docsData.documents || docsData.documents.length === 0) {
+                    panel.innerHTML = '<p style="text-align:center;padding:40px;">📭 No documents to show chunks for</p>';
+                    return;
+                }
+
+                let html = '<h3 style="margin-bottom:10px;">✂️ Document Chunks</h3>';
+                html += '<p style="color:#888;margin-bottom:15px;">Chunks are text segments used for embedding generation and semantic search</p>';
+                
+                for (const doc of docsData.documents) {
+                    try {
+                        const chunksRes = await fetch(API + '/documents/' + doc.id + '/chunks?limit=50');
+                        const chunksData = await chunksRes.json();
+                        
+                        html += '<h4 style="margin-top:15px;color:#569cd6;">📄 ' + doc.filename + ' (ID: ' + doc.id + ')</h4>';
+                        
+                        if (chunksData.chunks && chunksData.chunks.length > 0) {
+                            html += '<table><thead><tr><th>Chunk #</th><th>Content Preview</th><th>Words</th><th>Page</th><th>Section</th></tr></thead><tbody>';
+                            chunksData.chunks.forEach(chunk => {
+                                const preview = chunk.content ? chunk.content.substring(0, 100) + '...' : 'N/A';
+                                html += '<tr>';
+                                html += '<td>' + chunk.chunk_number + '</td>';
+                                html += '<td style="max-width:400px;overflow:hidden;">' + preview + '</td>';
+                                html += '<td>' + (chunk.word_count || '-') + '</td>';
+                                html += '<td>' + (chunk.page_number || '-') + '</td>';
+                                html += '<td>' + (chunk.section || '-') + '</td>';
+                                html += '</tr>';
+                            });
+                            html += '</tbody></table>';
+                        } else {
+                            html += '<p style="color:#888;">No chunks generated yet (document not processed)</p>';
+                        }
+                    } catch(e) {
+                        html += '<p style="color:red;">Error loading chunks for doc ' + doc.id + ': ' + e.message + '</p>';
+                    }
+                }
+                
+                panel.innerHTML = html;
+            } catch(e) {
+                panel.innerHTML = '<p style="color:red;">Error: ' + e.message + '</p>';
+            }
+        }
+
+        async function loadMetadata() {
+            const panel = document.getElementById('panel');
+            panel.innerHTML = '<div class="loading">Loading metadata...</div>';
+            
+            try {
+                const res = await fetch(API + '/documents?limit=100');
+                const data = await res.json();
+                
+                if (!data.documents || data.documents.length === 0) {
+                    panel.innerHTML = '<p style="text-align:center;padding:40px;">📭 No documents to show metadata for</p>';
+                    return;
+                }
+
+                let html = '<h3 style="margin-bottom:10px;">🏷️ Document Metadata</h3>';
+                html += '<p style="color:#888;margin-bottom:15px;">Extracted metadata from each document</p>';
+                
+                for (const doc of data.documents) {
+                    try {
+                        const metaRes = await fetch(API + '/documents/' + doc.id + '/metadata');
+                        const metaData = await metaRes.json();
+                        
+                        html += '<h4 style="margin-top:15px;color:#569cd6;">📄 ' + doc.filename + '</h4>';
+                        html += '<div class="json-viewer">' + syntaxHighlight(JSON.stringify(metaData, null, 2)) + '</div>';
+                    } catch(e) {
+                        html += '<p style="color:red;">Error loading metadata for doc ' + doc.id + ': ' + e.message + '</p>';
+                    }
+                }
+                
+                panel.innerHTML = html;
+            } catch(e) {
+                panel.innerHTML = '<p style="color:red;">Error: ' + e.message + '</p>';
+            }
+        }
+
+        function loadTables() {
+            document.getElementById('panel').innerHTML = 
+                '<div style="text-align:center;padding:40px;">' +
+                '<h3>📊 Extracted Tables</h3>' +
+                '<p style="color:#888;margin-top:10px;">Tables extracted from documents will appear here after processing.</p>' +
+                '<p style="color:#888;">Currently stored in: extracted_tables table in SQLite database</p>' +
+                '</div>';
+        }
+
+        function loadImages() {
+            document.getElementById('panel').innerHTML = 
+                '<div style="text-align:center;padding:40px;">' +
+                '<h3>🖼️ Extracted Images</h3>' +
+                '<p style="color:#888;margin-top:10px;">Images extracted from documents are stored in:</p>' +
+                '<p style="color:#569cd6;">C:\\Users\\admin\\industrial-doc-processor\\extracted\\</p>' +
+                '</div>';
+        }
+
+        function loadLogs() {
+            document.getElementById('panel').innerHTML = 
+                '<div style="text-align:center;padding:40px;">' +
+                '<h3>📋 Audit Logs</h3>' +
+                '<p style="color:#888;margin-top:10px;">Operation logs are stored in:</p>' +
+                '<p style="color:#569cd6;">C:\\Users\\admin\\industrial-doc-processor\\logs\\app.log</p>' +
+                '<p style="color:#888;margin-top:10px;">And in the audit_logs table in SQLite database</p>' +
+                '</div>';
+        }
+
+        function syntaxHighlight(json) {
+            json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+                let cls = 'number';
+                if (/^"/.test(match)) {
+                    if (/:$/.test(match)) {
+                        cls = 'key';
+                    } else {
+                        cls = 'string';
+                    }
+                } else if (/true|false/.test(match)) {
+                    cls = 'boolean';
+                } else if (/null/.test(match)) {
+                    cls = 'null';
+                }
+                return '<span class="' + cls + '">' + match + '</span>';
+            });
+        }
+
+        init();
+    </script>
+</body>
+</html>

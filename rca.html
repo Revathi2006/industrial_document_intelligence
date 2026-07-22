@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Root Cause Analysis</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:'Segoe UI',sans-serif;background:#1a1a2e;color:#e8e8f0;min-height:100vh}
+        .header{background:linear-gradient(135deg,#e74c3c,#c0392b);padding:20px;text-align:center}
+        .header h1{font-size:1.5em}
+        .container{max-width:1200px;margin:20px auto;padding:0 20px}
+        .search-box{display:flex;gap:10px;margin:20px 0}
+        .search-box input{flex:1;padding:14px;border-radius:10px;border:2px solid #333;background:#16213e;color:#fff;font-size:16px}
+        .search-box input:focus{border-color:#e74c3c;outline:none}
+        .search-box button{padding:14px 24px;border-radius:10px;border:none;background:#e74c3c;color:#fff;font-weight:700;cursor:pointer;font-size:16px}
+        .search-box button:hover{background:#c0392b}
+        .card{background:#16213e;border-radius:15px;padding:25px;margin:20px 0;border:1px solid #2a2a4a}
+        .card h2{color:#e74c3c;margin-bottom:15px;font-size:1.2em}
+        .grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+        .stat{background:#0f3460;padding:15px;border-radius:10px;text-align:center}
+        .stat-value{font-size:1.8em;font-weight:700;color:#e74c3c}
+        .stat-label{color:#888;font-size:0.8em;margin-top:5px}
+        .timeline-item{display:flex;align-items:center;gap:15px;padding:10px;border-left:3px solid #e74c3c;margin:10px 0;background:#0f3460;border-radius:0 8px 8px 0}
+        .timeline-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0}
+        .evidence-list{list-style:none}
+        .evidence-list li{padding:8px 0;border-bottom:1px solid #2a2a4a}
+        .evidence-list li:before{content:'🔍 '}
+        .recommendations-list{list-style:none}
+        .recommendations-list li{padding:10px;margin:5px 0;background:#0f3460;border-radius:8px;border-left:3px solid #27ae60}
+        .recommendations-list li:before{content:'✅ '}
+        .badge{display:inline-block;padding:5px 12px;border-radius:20px;font-size:0.8em;font-weight:700}
+        .badge-critical{background:#c0392b;color:#fff}
+        .badge-high{background:#e74c3c;color:#fff}
+        .badge-medium{background:#f39c12;color:#000}
+        .badge-normal{background:#27ae60;color:#fff}
+        .loading{text-align:center;padding:40px;color:#888}
+        .spinner{width:40px;height:40px;border:4px solid #333;border-top:4px solid #e74c3c;border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 15px}
+        @keyframes spin{to{transform:rotate(360deg)}}
+        .hidden{display:none}
+        .quick-actions{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px}
+        .quick-btn{padding:8px 16px;background:#0f3460;border:1px solid #333;color:#fff;border-radius:20px;cursor:pointer;font-size:0.9em}
+        .quick-btn:hover{background:#e74c3c}
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🔍 Root Cause Analysis Agent</h1>
+        <p style="opacity:0.8">Analyze equipment failures & get recommendations</p>
+    </div>
+    
+    <div class="container">
+        <div class="quick-actions">
+            <button class="quick-btn" onclick="analyze('MTR-AL3-001')">🔧 MTR-AL3-001</button>
+            <button class="quick-btn" onclick="analyze('MTR-AL3-002')">🔧 MTR-AL3-002</button>
+        </div>
+        
+        <div class="search-box">
+            <input type="text" id="equipInput" placeholder="Enter Equipment ID (e.g., MTR-AL3-001)" onkeypress="if(event.key==='Enter')analyze()">
+            <button onclick="analyze()">🔍 Analyze</button>
+        </div>
+        
+        <div id="loading" class="card loading hidden">
+            <div class="spinner"></div>
+            <p>Analyzing failure patterns...</p>
+        </div>
+        
+        <div id="results" class="hidden">
+            <div class="card">
+                <h2>🎯 Root Cause</h2>
+                <div id="rootCause"></div>
+            </div>
+            
+            <div class="grid">
+                <div class="card">
+                    <h2>📊 Analysis</h2>
+                    <div id="analysis"></div>
+                </div>
+                <div class="card">
+                    <h2>📅 Failure Timeline</h2>
+                    <div id="timeline"></div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h2>🔍 Evidence</h2>
+                <ul class="evidence-list" id="evidence"></ul>
+            </div>
+            
+            <div class="card">
+                <h2>✅ Recommendations</h2>
+                <ul class="recommendations-list" id="recommendations"></ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var API = 'http://localhost:8000';
+        
+        async function analyze(equipId) {
+            var id = equipId || document.getElementById('equipInput').value.trim();
+            if (!id) return;
+            
+            document.getElementById('loading').classList.remove('hidden');
+            document.getElementById('results').classList.add('hidden');
+            
+            try {
+                var r = await fetch(API + '/rca/analyze/' + id);
+                var d = await r.json();
+                
+                if (d.error) {
+                    alert('No data found for ' + id);
+                    document.getElementById('loading').classList.add('hidden');
+                    return;
+                }
+                
+                var rc = d.root_cause || {};
+                var a = d.analysis || {};
+                var severityBadge = (a.severity || 'medium').toLowerCase();
+                
+                document.getElementById('rootCause').innerHTML = 
+                    '<h3 style="font-size:1.5em;color:#e74c3c">' + (rc.primary || 'Unknown') + '</h3>' +
+                    '<p style="margin:10px 0">Confidence: <b>' + (rc.confidence || 'N/A') + '</b></p>' +
+                    '<span class="badge badge-' + severityBadge + '">' + (a.severity || 'MEDIUM') + '</span>' +
+                    '<p style="margin-top:10px;color:#aaa">' + (rc.failure_mode || '') + '</p>';
+                
+                document.getElementById('analysis').innerHTML = 
+                    '<div class="grid" style="grid-template-columns:1fr 1fr">' +
+                    '<div class="stat"><div class="stat-value">' + (a.temperature_rise || '0°C') + '</div><div class="stat-label">Temp Rise</div></div>' +
+                    '<div class="stat"><div class="stat-value">' + (a.vibration_increase || '0 mm/s') + '</div><div class="stat-label">Vibration</div></div>' +
+                    '<div class="stat"><div class="stat-value">' + (a.max_temperature || '0°C') + '</div><div class="stat-label">Max Temp</div></div>' +
+                    '<div class="stat"><div class="stat-value">' + (a.days_monitored || 0) + '</div><div class="stat-label">Days</div></div>' +
+                    '</div>';
+                
+                var tl = d.timeline || [];
+                document.getElementById('timeline').innerHTML = tl.length > 0 ? tl.map(function(t) {
+                    var color = t.status === 'CRITICAL' ? '#c0392b' : t.status === 'WARNING' ? '#f39c12' : t.status === 'SHUTDOWN' ? '#000' : '#27ae60';
+                    return '<div class="timeline-item"><div class="timeline-dot" style="background:' + color + '"></div><div><b>' + (t.date || '') + '</b><br>' + (t.status || '') + ' | ' + (t.temp || '') + ' | ' + (t.vibration || '') + '</div></div>';
+                }).join('') : '<p>No timeline data</p>';
+                
+                document.getElementById('evidence').innerHTML = (rc.evidence || []).length > 0 ? rc.evidence.map(function(e) {
+                    return '<li>' + e + '</li>';
+                }).join('') : '<li>No evidence data</li>';
+                
+                document.getElementById('recommendations').innerHTML = (d.recommendations || []).length > 0 ? d.recommendations.map(function(r) {
+                    return '<li>' + r + '</li>';
+                }).join('') : '<li>No recommendations</li>';
+                
+                document.getElementById('results').classList.remove('hidden');
+            } catch(e) {
+                alert('Error: ' + e.message);
+            }
+            
+            document.getElementById('loading').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>

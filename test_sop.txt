@@ -1,0 +1,40 @@
+﻿STANDARD OPERATING PROCEDURE
+Document: SOP-MNT-001
+Equipment: Centrifugal Pump XP-500
+Department: Mechanical Maintenance
+Version: 3.2
+Effective Date: 2024-01-15
+
+1.0 PURPOSE
+This procedure outlines the maintenance requirements for centrifugal pumps.
+
+2.0 SCOPE
+Applies to all XP-500 series pumps in the processing plant.
+
+3.0 PROCEDURE
+3.1 Daily Inspection
+- Check pressure gauge readings (normal: 5-7 bar)
+- Listen for unusual bearing noise
+- Verify oil level in sight glass
+- Record readings in maintenance log
+
+3.2 Weekly Maintenance
+- Lubricate all grease fittings
+- Check belt tension (deflection: 10-15mm)
+- Clean air intake filters
+- Inspect coupling alignment
+
+3.3 Monthly Service
+- Full system inspection
+- Replace worn mechanical seals
+- Calibrate pressure sensors
+- Test emergency shutdown
+- Update maintenance records
+
+4.0 SAFETY REQUIREMENTS
+- Lockout/Tagout before maintenance
+- Wear PPE (gloves, safety glasses, steel-toe boots)
+- Depressurize system before opening
+
+Engineer: John Smith
+Approved: Jane Doe

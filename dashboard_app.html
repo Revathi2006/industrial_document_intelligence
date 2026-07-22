@@ -1,0 +1,152 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DocFlow - Document Processor</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:'Segoe UI',Arial,sans-serif;background:#1a1a2e;color:#eee;min-height:100vh}
+        .header{background:linear-gradient(135deg,#667eea,#764ba2);padding:20px;text-align:center}
+        .header h1{font-size:1.8em}
+        .status-bar{display:inline-block;padding:5px 20px;border-radius:20px;margin-top:10px;font-size:.9em}
+        .online{background:#00c853;color:#fff}
+        .offline{background:#ff1744;color:#fff}
+        .container{max-width:1400px;margin:20px auto;padding:0 20px;display:grid;grid-template-columns:1fr 1fr;gap:20px}
+        .panel{background:#16213e;border-radius:10px;padding:25px;border:1px solid #2a2a4a}
+        .panel h2{color:#667eea;margin-bottom:20px;padding-bottom:10px;border-bottom:2px solid #667eea}
+        .upload-zone{border:3px dashed #667eea;border-radius:10px;padding:40px;text-align:center;cursor:pointer;background:#0f3460;margin-bottom:20px}
+        .upload-zone:hover{background:#1a1a40;border-color:#764ba2}
+        .upload-icon{font-size:3em;margin-bottom:10px}
+        input[type="file"]{display:none}
+        .btn{width:100%;padding:12px;border:none;border-radius:8px;font-size:16px;font-weight:700;cursor:pointer}
+        .btn-upload{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff}
+        .btn-upload:disabled{background:#333;cursor:not-allowed}
+        .btn-refresh{background:#00c853;color:#fff;width:auto;padding:8px 20px;margin-bottom:15px}
+        .btn-delete{background:#ff1744;color:#fff;padding:5px 10px;font-size:12px;width:auto;border-radius:3px;border:none;cursor:pointer}
+        table{width:100%;border-collapse:collapse;margin-top:15px}
+        th{background:#667eea;color:#fff;padding:10px;text-align:left}
+        td{padding:10px;border-bottom:1px solid #2a2a4a;font-size:14px}
+        tr:hover{background:#1a1a40}
+        .badge{padding:3px 10px;border-radius:12px;font-size:11px;font-weight:700}
+        .badge-completed{background:#1b5e20;color:#69f0ae}
+        .badge-uploaded{background:#e65100;color:#ffcc80}
+        .badge-failed{background:#b71c1c;color:#ef9a9a}
+        .message{padding:12px;border-radius:8px;margin-bottom:15px;display:none}
+        .msg-success{background:#1b5e20;color:#69f0ae;border:1px solid #69f0ae;display:block}
+        .msg-error{background:#b71c1c;color:#ef9a9a;border:1px solid #ef9a9a;display:block}
+        .file-item{display:flex;justify-content:space-between;align-items:center;padding:10px;background:#0f3460;margin:5px 0;border-radius:5px}
+        .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px}
+        .stat-box{background:#0f3460;padding:15px;border-radius:8px;text-align:center}
+        .stat-value{font-size:1.8em;color:#667eea;font-weight:700}
+        .stat-label{font-size:.8em;color:#888;margin-top:5px}
+        .result-item{background:#0f3460;padding:10px;border-radius:8px;margin:5px 0;font-size:13px}
+        @media(max-width:768px){.container{grid-template-columns:1fr}}
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📁 DocFlow - Document Processor</h1>
+        <p>Upload documents | Auto-extract text | Generate chunks</p>
+        <div id="apiStatus" class="status-bar offline">Checking API...</div>
+    </div>
+    <div class="container">
+        <div class="panel">
+            <h2>📤 Upload Document</h2>
+            <div id="msgBox"></div>
+            <div class="upload-zone" id="dropZone">
+                <div class="upload-icon">📁</div>
+                <h3>Click or Drop Files Here</h3>
+                <p style="color:#888">PDF • DOCX • XLSX • Images</p>
+            </div>
+            <input type="file" id="fileInput" multiple accept=".pdf,.docx,.xlsx,.csv,.png,.jpg,.jpeg,.tiff,.tif">
+            <div id="fileList"></div>
+            <button class="btn btn-upload" id="uploadBtn" disabled onclick="uploadFiles()">🚀 Upload & Process</button>
+            <div id="uploadResult" style="margin-top:15px"></div>
+        </div>
+        <div class="panel">
+            <h2>📊 Stored Documents</h2>
+            <button class="btn btn-refresh" onclick="loadDocuments()">🔄 Refresh</button>
+            <div class="stats" id="statsBox" style="display:none">
+                <div class="stat-box"><div class="stat-value" id="totalDocs">0</div><div class="stat-label">Documents</div></div>
+                <div class="stat-box"><div class="stat-value" id="totalChunks">0</div><div class="stat-label">Chunks</div></div>
+                <div class="stat-box"><div class="stat-value" id="totalWords">0</div><div class="stat-label">Words</div></div>
+            </div>
+            <div id="docsTable">Loading...</div>
+        </div>
+    </div>
+    <script>
+        var API='http://localhost:8000';
+        var selectedFiles=[];
+        async function checkAPI(){
+            try{var r=await fetch(API+'/');if(r.ok){document.getElementById('apiStatus').textContent='🟢 Connected';document.getElementById('apiStatus').className='status-bar online'}}
+            catch(e){document.getElementById('apiStatus').textContent='🔴 Offline';document.getElementById('apiStatus').className='status-bar offline'}
+        }
+        var dz=document.getElementById('dropZone');
+        dz.onclick=function(){document.getElementById('fileInput').click()};
+        dz.ondragover=function(e){e.preventDefault()};
+        dz.ondrop=function(e){e.preventDefault();handleFiles(e.dataTransfer.files)};
+        document.getElementById('fileInput').onchange=function(e){handleFiles(e.target.files)};
+        function handleFiles(f){selectedFiles=Array.from(f);showFiles();document.getElementById('uploadBtn').disabled=selectedFiles.length===0}
+        function showFiles(){
+            var d=document.getElementById('fileList');
+            if(!selectedFiles.length){d.innerHTML='';return}
+            var h='';
+            for(var i=0;i<selectedFiles.length;i++){
+                var f=selectedFiles[i];
+                var s=f.size>1048576?(f.size/1048576).toFixed(1)+' MB':(f.size/1024).toFixed(1)+' KB';
+                h+='<div class="file-item"><span>📄 '+f.name+' ('+s+')</span><button class="btn-delete" onclick="removeFile('+i+')">✕</button></div>'
+            }
+            d.innerHTML=h
+        }
+        function removeFile(i){selectedFiles.splice(i,1);showFiles();document.getElementById('uploadBtn').disabled=selectedFiles.length===0}
+        function showMsg(m,t){var b=document.getElementById('msgBox');b.innerHTML='<div class="message msg-'+t+'">'+m+'</div>';setTimeout(function(){b.innerHTML=''},4000)}
+        async function uploadFiles(){
+            if(!selectedFiles.length)return;
+            var btn=document.getElementById('uploadBtn');btn.disabled=true;btn.textContent='⏳ Processing...';
+            var fd=new FormData();
+            for(var i=0;i<selectedFiles.length;i++)fd.append('files',selectedFiles[i]);
+            try{
+                var r=await fetch(API+'/documents/upload',{method:'POST',body:fd});
+                var d=await r.json();
+                if(r.ok&&d.documents){
+                    showMsg('✅ '+d.documents.length+' file(s) processed!','success');
+                    var rh='';
+                    for(var j=0;j<d.documents.length;j++){
+                        var doc=d.documents[j];
+                        var chunks=doc.chunks||doc.chunks_count||0;
+                        rh+='<div class="result-item"><b>#'+doc.id+'</b> '+doc.filename+'<br>📝 '+doc.words+' words | 📄 '+doc.pages+' pages | ✂️ '+chunks+' chunks</div>'
+                    }
+                    document.getElementById('uploadResult').innerHTML=rh;
+                    selectedFiles=[];document.getElementById('fileInput').value='';showFiles();loadDocuments()
+                }else{throw new Error(d.detail||'Upload failed')}
+            }catch(e){showMsg('❌ '+e.message,'error')}
+            btn.disabled=false;btn.textContent='🚀 Upload & Process'
+        }
+        async function loadDocuments(){
+            var d=document.getElementById('docsTable');d.innerHTML='<p style="text-align:center;color:#888">Loading...</p>';
+            try{
+                var r=await fetch(API+'/documents?limit=50');var data=await r.json();
+                document.getElementById('statsBox').style.display='grid';
+                document.getElementById('totalDocs').textContent=data.total||0;
+                var tc=0,tw=0;
+                if(data.documents&&data.documents.length){
+                    var h='<table><thead><tr><th>ID</th><th>Filename</th><th>Status</th><th>Pages</th><th>Words</th><th>Chunks</th><th>Delete</th></tr></thead><tbody>';
+                    for(var j=0;j<data.documents.length;j++){
+                        var doc=data.documents[j];var cc=0;
+                        try{var cr=await fetch(API+'/documents/'+doc.id+'/chunks');var cd=await cr.json();cc=(cd.chunks&&cd.chunks.length)?cd.chunks.length:0}catch(e){}
+                        tc+=cc;tw+=(doc.word_count||0);
+                        var bc='badge-'+(doc.status||'uploaded');
+                        h+='<tr><td><b>#'+doc.id+'</b></td><td>'+doc.filename+'</td><td><span class="badge '+bc+'">'+(doc.status||'unknown')+'</span></td><td>'+(doc.page_count||'-')+'</td><td>'+(doc.word_count||'-')+'</td><td><b>'+cc+'</b></td><td><button class="btn-delete" onclick="deleteDoc('+doc.id+')">🗑</button></td></tr>'
+                    }
+                    h+='</tbody></table>';d.innerHTML=h
+                }else{d.innerHTML='<p style="text-align:center;color:#888;padding:40px">📭 No documents yet. Upload one!</p>'}
+                document.getElementById('totalChunks').textContent=tc;
+                document.getElementById('totalWords').textContent=tw.toLocaleString()
+            }catch(e){d.innerHTML='<p style="color:#ff6b6b">Error loading documents</p>'}
+        }
+        async function deleteDoc(id){if(!confirm('Delete document #'+id+'?'))return;try{await fetch(API+'/documents/'+id,{method:'DELETE'});showMsg('✅ Deleted!','success');loadDocuments()}catch(e){showMsg('❌ '+e.message,'error')}}
+        checkAPI();loadDocuments();setInterval(loadDocuments,15000)
+    </script>
+</body>
+</html>

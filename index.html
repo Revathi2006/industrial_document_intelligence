@@ -1,0 +1,523 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DocFlow - Industrial Document Intelligence</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0a0b14;
+            --surface: #13152a;
+            --card: #1a1d35;
+            --border: #252840;
+            --accent: #6c5ce7;
+            --accent2: #a855f7;
+            --green: #10b981;
+            --green-bg: rgba(16,185,129,0.1);
+            --red: #ef4444;
+            --red-bg: rgba(239,68,68,0.1);
+            --orange: #f59e0b;
+            --orange-bg: rgba(245,158,11,0.1);
+            --text: #e2e8f0;
+            --text2: #94a3b8;
+            --text3: #64748b;
+            --radius: 16px;
+            --radius-sm: 10px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Plus Jakarta Sans', 'Segoe UI', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(ellipse at 10% 0%, rgba(108,92,231,0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 90% 100%, rgba(168,85,247,0.05) 0%, transparent 50%);
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, rgba(108,92,231,0.15), rgba(168,85,247,0.1));
+            border-bottom: 1px solid var(--border);
+            padding: 20px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(10px);
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .logo-icon {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+        .logo h1 { font-size: 20px; font-weight: 700; }
+        .logo span { color: var(--accent2); font-weight: 300; }
+        .api-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        .status-online { background: var(--green-bg); color: var(--green); }
+        .status-offline { background: var(--red-bg); color: var(--red); }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; }
+        .status-online .status-dot { background: var(--green); box-shadow: 0 0 8px var(--green); }
+        .status-offline .status-dot { background: var(--red); box-shadow: 0 0 8px var(--red); }
+
+        /* Main Layout */
+        .main-container {
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 28px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 28px;
+            transition: all 0.2s;
+        }
+        .card:hover { border-color: #333; }
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+        .card-title {
+            font-size: 17px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .card-title .icon { font-size: 22px; }
+
+        /* Upload Zone */
+        .upload-zone {
+            border: 2px dashed var(--border);
+            border-radius: var(--radius);
+            padding: 48px 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: rgba(108,92,231,0.03);
+            margin-bottom: 20px;
+        }
+        .upload-zone:hover {
+            border-color: var(--accent);
+            background: rgba(108,92,231,0.06);
+            transform: translateY(-2px);
+        }
+        .upload-zone.dragover {
+            border-color: var(--green);
+            background: var(--green-bg);
+        }
+        .upload-zone .big-icon { font-size: 52px; margin-bottom: 16px; }
+        .upload-zone h3 { font-size: 17px; font-weight: 600; margin-bottom: 6px; }
+        .upload-zone p { color: var(--text3); font-size: 13px; }
+        .format-badges {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin-top: 16px;
+            flex-wrap: wrap;
+        }
+        .format-badge {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            color: var(--text2);
+            font-weight: 500;
+        }
+        input[type="file"] { display: none; }
+
+        /* Buttons */
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            color: white;
+            width: 100%;
+            justify-content: center;
+            font-size: 15px;
+            padding: 14px;
+        }
+        .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 8px 25px rgba(108,92,231,0.3); }
+        .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
+        .btn-refresh {
+            background: var(--surface);
+            color: var(--text2);
+            border: 1px solid var(--border);
+            padding: 8px 16px;
+            font-size: 13px;
+        }
+        .btn-refresh:hover { background: var(--border); color: var(--text); }
+        .btn-delete {
+            background: transparent;
+            color: var(--text3);
+            border: 1px solid transparent;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-delete:hover { background: var(--red-bg); color: var(--red); border-color: var(--red); }
+
+        /* Stats */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .stat-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 16px;
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 28px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .stat-label { font-size: 11px; color: var(--text3); margin-top: 4px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        /* Table */
+        .table-wrap { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; }
+        th {
+            text-align: left;
+            padding: 12px 16px;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text3);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--border);
+        }
+        td { padding: 14px 16px; font-size: 13px; border-bottom: 1px solid rgba(37,40,64,0.5); }
+        tr:hover td { background: rgba(108,92,231,0.03); }
+        .doc-name { font-weight: 600; max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+        .badge-completed { background: var(--green-bg); color: var(--green); }
+        .badge-uploaded { background: var(--orange-bg); color: var(--orange); }
+        .badge-failed { background: var(--red-bg); color: var(--red); }
+        .badge-dot { width: 6px; height: 6px; border-radius: 50%; }
+        .badge-completed .badge-dot { background: var(--green); }
+        .badge-uploaded .badge-dot { background: var(--orange); }
+
+        /* File chips */
+        .file-chip {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 10px 14px;
+            border-radius: var(--radius-sm);
+            margin: 6px 0;
+            font-size: 13px;
+        }
+        .file-chip .name { flex: 1; font-weight: 500; }
+        .file-chip .size { color: var(--text3); font-size: 12px; }
+        .file-chip .remove {
+            background: none;
+            border: none;
+            color: var(--text3);
+            cursor: pointer;
+            font-size: 16px;
+            padding: 4px 8px;
+            border-radius: 6px;
+        }
+        .file-chip .remove:hover { background: var(--red-bg); color: var(--red); }
+
+        /* Result */
+        .result-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 14px;
+            margin: 8px 0;
+            font-size: 13px;
+        }
+        .result-card .title { font-weight: 700; color: var(--accent2); }
+        .result-card .meta { color: var(--text2); margin-top: 4px; }
+
+        /* Alert */
+        .alert {
+            padding: 12px 16px;
+            border-radius: var(--radius-sm);
+            margin-bottom: 16px;
+            font-size: 13px;
+            font-weight: 500;
+            display: none;
+        }
+        .alert-success { background: var(--green-bg); color: var(--green); border: 1px solid rgba(16,185,129,0.3); display: block; }
+        .alert-error { background: var(--red-bg); color: var(--red); border: 1px solid rgba(239,68,68,0.3); display: block; }
+
+        /* Embedding badge */
+        .embed-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 10px;
+            padding: 3px 8px;
+            border-radius: 10px;
+            background: rgba(108,92,231,0.15);
+            color: var(--accent2);
+            font-weight: 600;
+        }
+
+        @media (max-width: 900px) {
+            .main-container { grid-template-columns: 1fr; }
+            .header { padding: 16px; }
+        }
+
+        .empty-state { text-align: center; padding: 40px; color: var(--text3); }
+        .empty-state .icon { font-size: 48px; margin-bottom: 12px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">
+            <div class="logo-icon">📁</div>
+            <h1>Doc<span>Flow</span></h1>
+        </div>
+        <div id="apiStatus" class="api-status status-offline">
+            <span class="status-dot"></span> Checking...
+        </div>
+    </div>
+
+    <div class="main-container">
+        <!-- Upload Card -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title"><span class="icon">📤</span> Upload Document</div>
+            </div>
+            <div id="alertBox"></div>
+            
+            <div class="upload-zone" id="dropZone">
+                <div class="big-icon">☁️</div>
+                <h3>Drop files here or click to browse</h3>
+                <p>Auto-processes text, chunks, and prepares for vector embedding</p>
+                <div class="format-badges">
+                    <span class="format-badge">PDF</span>
+                    <span class="format-badge">DOCX</span>
+                    <span class="format-badge">XLSX</span>
+                    <span class="format-badge">CSV</span>
+                    <span class="format-badge">PNG</span>
+                    <span class="format-badge">JPEG</span>
+                </div>
+            </div>
+            <input type="file" id="fileInput" multiple accept=".pdf,.docx,.xlsx,.csv,.png,.jpg,.jpeg,.tiff,.tif">
+            <div id="fileList"></div>
+            <button class="btn btn-primary" id="uploadBtn" disabled onclick="uploadFiles()">
+                🚀 Upload & Process
+            </button>
+            <div id="uploadResult" style="margin-top:16px;"></div>
+        </div>
+
+        <!-- Database Card -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title"><span class="icon">📊</span> Document Database</div>
+                <button class="btn btn-refresh" onclick="loadDocuments()">🔄 Refresh</button>
+            </div>
+            
+            <div class="stats-row" id="statsBox" style="display:none;">
+                <div class="stat-card">
+                    <div class="stat-value" id="totalDocs">0</div>
+                    <div class="stat-label">Documents</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="totalChunks">0</div>
+                    <div class="stat-label">Chunks</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="totalWords">0</div>
+                    <div class="stat-label">Words</div>
+                </div>
+            </div>
+            
+            <div id="docsTable" class="table-wrap">
+                <div class="empty-state"><div class="icon">📭</div><p>Loading documents...</p></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var API = 'http://localhost:8000';
+        var selectedFiles = [];
+
+        async function checkAPI() {
+            var s = document.getElementById('apiStatus');
+            try {
+                var r = await fetch(API + '/');
+                if (r.ok) {
+                    s.innerHTML = '<span class="status-dot"></span> API Connected';
+                    s.className = 'api-status status-online';
+                }
+            } catch(e) {
+                s.innerHTML = '<span class="status-dot"></span> API Offline';
+                s.className = 'api-status status-offline';
+            }
+        }
+
+        var dropZone = document.getElementById('dropZone');
+        dropZone.onclick = function() { document.getElementById('fileInput').click(); };
+        dropZone.ondragover = function(e) { e.preventDefault(); dropZone.classList.add('dragover'); };
+        dropZone.ondragleave = function() { dropZone.classList.remove('dragover'); };
+        dropZone.ondrop = function(e) { e.preventDefault(); dropZone.classList.remove('dragover'); handleFiles(e.dataTransfer.files); };
+        document.getElementById('fileInput').onchange = function(e) { handleFiles(e.target.files); };
+
+        function handleFiles(files) {
+            selectedFiles = Array.from(files);
+            showFiles();
+            document.getElementById('uploadBtn').disabled = selectedFiles.length === 0;
+        }
+
+        function showFiles() {
+            var div = document.getElementById('fileList');
+            if (!selectedFiles.length) { div.innerHTML = ''; return; }
+            var h = '';
+            for (var i = 0; i < selectedFiles.length; i++) {
+                var f = selectedFiles[i];
+                var sz = f.size > 1048576 ? (f.size/1048576).toFixed(1)+' MB' : (f.size/1024).toFixed(1)+' KB';
+                h += '<div class="file-chip"><span>📄</span><span class="name">'+f.name+'</span><span class="size">'+sz+'</span><button class="remove" onclick="removeFile('+i+')">✕</button></div>';
+            }
+            div.innerHTML = h;
+        }
+
+        function removeFile(i) { selectedFiles.splice(i,1); showFiles(); document.getElementById('uploadBtn').disabled = !selectedFiles.length; }
+
+        function alert(msg, type) {
+            var b = document.getElementById('alertBox');
+            b.innerHTML = '<div class="alert alert-'+type+'">'+msg+'</div>';
+            setTimeout(function(){ b.innerHTML = ''; }, 4000);
+        }
+
+        async function uploadFiles() {
+            if (!selectedFiles.length) return;
+            var btn = document.getElementById('uploadBtn');
+            btn.disabled = true;
+            btn.innerHTML = '⏳ Processing...';
+            var fd = new FormData();
+            for (var i = 0; i < selectedFiles.length; i++) fd.append('files', selectedFiles[i]);
+            
+            try {
+                var res = await fetch(API + '/documents/upload', { method: 'POST', body: fd });
+                var data = await res.json();
+                if (res.ok && data.documents) {
+                    alert('✅ '+data.documents.length+' document(s) processed! Chunks stored, ready for embedding.', 'success');
+                    var rh = '';
+                    for (var j = 0; j < data.documents.length; j++) {
+                        var d = data.documents[j];
+                        var chunks = d.chunks_count || d.chunks || 0;
+                        rh += '<div class="result-card"><span class="title">#'+d.id+'</span> '+d.filename+'<div class="meta">📝 '+d.words+' words | 📄 '+d.pages+' pages | ✂️ '+chunks+' chunks | <span class="embed-badge">🧠 Ready for Vector Embedding</span></div></div>';
+                    }
+                    document.getElementById('uploadResult').innerHTML = rh;
+                    selectedFiles = [];
+                    document.getElementById('fileInput').value = '';
+                    showFiles();
+                    loadDocuments();
+                } else { throw new Error(data.detail || 'Upload failed'); }
+            } catch(e) { alert('❌ '+e.message, 'error'); }
+            btn.disabled = false;
+            btn.innerHTML = '🚀 Upload & Process';
+        }
+
+        async function loadDocuments() {
+            var div = document.getElementById('docsTable');
+            div.innerHTML = '<div class="empty-state"><p>Loading...</p></div>';
+            try {
+                var res = await fetch(API + '/documents?limit=50');
+                var data = await res.json();
+                var sb = document.getElementById('statsBox');
+                sb.style.display = 'grid';
+                document.getElementById('totalDocs').textContent = data.total || 0;
+                var tc = 0, tw = 0;
+                
+                if (data.documents && data.documents.length) {
+                    var h = '<table><thead><tr><th>ID</th><th>Filename</th><th>Status</th><th>Pages</th><th>Words</th><th>Chunks</th><th>Embedding</th><th>Action</th></tr></thead><tbody>';
+                    for (var j = 0; j < data.documents.length; j++) {
+                        var d = data.documents[j];
+                        var cc = 0;
+                        try {
+                            var cr = await fetch(API + '/documents/'+d.id+'/chunks');
+                            var cd = await cr.json();
+                            cc = (cd.chunks && cd.chunks.length) ? cd.chunks.length : 0;
+                        } catch(e) { cc = 0; }
+                        tc += cc;
+                        tw += (d.word_count || 0);
+                        var bc = 'badge-' + (d.status || 'uploaded');
+                        var st = (d.status || 'unknown');
+                        h += '<tr><td><b>#'+d.id+'</b></td><td class="doc-name" title="'+d.filename+'">'+d.filename+'</td><td><span class="badge '+bc+'"><span class="badge-dot"></span>'+st+'</span></td><td>'+(d.page_count||'-')+'</td><td>'+(d.word_count||'-')+'</td><td><b>'+cc+'</b></td><td><span class="embed-badge">🧠 Ready</span></td><td><button class="btn-delete" onclick="deleteDoc('+d.id+')">🗑</button></td></tr>';
+                    }
+                    h += '</tbody></table>';
+                    div.innerHTML = h;
+                } else {
+                    div.innerHTML = '<div class="empty-state"><div class="icon">📭</div><p>No documents yet</p><p style="font-size:13px;">Upload your first document above</p></div>';
+                }
+                document.getElementById('totalChunks').textContent = tc;
+                document.getElementById('totalWords').textContent = tw.toLocaleString();
+            } catch(e) { div.innerHTML = '<div class="empty-state"><p style="color:var(--red);">Error loading</p></div>'; }
+        }
+
+        async function deleteDoc(id) {
+            if (!confirm('Delete document #'+id+'?')) return;
+            try { await fetch(API+'/documents/'+id, { method:'DELETE' }); alert('✅ Deleted!', 'success'); loadDocuments(); }
+            catch(e) { alert('❌ '+e.message, 'error'); }
+        }
+
+        checkAPI();
+        loadDocuments();
+        setInterval(loadDocuments, 15000);
+    </script>
+</body>
+</html>
