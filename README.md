@@ -1,4 +1,4 @@
-```markdown
+
 # 🏭 DocFlow Pro
 
 > **Industrial Document Intelligence Platform**
